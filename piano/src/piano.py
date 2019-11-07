@@ -114,23 +114,6 @@ def generate_ascii_number(file_name, num):
     song_file.write(number)
 
 ##########################################################
-# Description: find_label is a method used in            #
-# key_pressed and key_released that searches the array   #
-# passed in for name, and returns the Label associated   #
-# with that element.                                     #
-#                                                        #
-# Accepts: name, the name of the note that is to be      #
-# checked for; array, the array that is to be searched.  #
-##########################################################
-def find_label(name, array):
-    for x in range(len(array)):
-        # checks against the name component in keys
-        if name == array[x][1]:
-            # returns the Label component in keys
-            return array[x][2]
-
-
-##########################################################
 # Description: key_pressed is a method bound to each of  #
 # the keyboard keys in the dictionary KEYS_TO_NOTES that #
 # plays the note associated with the key pressed,        #
@@ -217,6 +200,7 @@ KEYS_TO_NOTES = {
     'v': 'A5',
     'w': 'A#B5',
     'x': 'B5',
+    'y': 'C6'
 }
 NOTES_TO_KEYS = {
     'C4': 'a',
@@ -243,6 +227,7 @@ NOTES_TO_KEYS = {
     'A5': 'v',
     'A#B5': 'w',
     'B5': 'x',
+    'C6': 'y'
 }
 
 
@@ -313,7 +298,8 @@ class Piano(Frame):
             [585, 'G#A5'],
             [600, 'A5'],
             [635, 'A#B5'],
-            [650, 'B5']
+            [650, 'B5'],
+            [700, 'C6']
         ]
         
 
@@ -332,7 +318,7 @@ class Piano(Frame):
                 key.append(self.create_key(colour, key))
 
         num = 1
-        placement = 700
+        placement = 750
         place = 0
         for x in range(6):
             label = Button(bg = 'white', text = num,height = 3, width = 6)
@@ -349,28 +335,28 @@ class Piano(Frame):
 
         # This group of lines creates the record Label.
         record_button = Label(self, bg = 'red', height = 3, width = 6, text = 'record')
-        record_button.place(x=800, y=0)
+        record_button.place(x=850, y=0)
         record_button.name = 'red_button'
         record_button.bind('<Button-1>', record_on_off)
 
         # This group of lines creates the play Label.
         play_button = Label(self, bg = 'green', text = 'play', height = 3, width = 6)
-        play_button.place(x=800, y=100)
+        play_button.place(x=850, y=100)
         play_button.name = 'green_button'
         play_button.bind('<Button-1>', play_back)
 
         Tempo = Label(text = "Tempo", height = 3, width = 6)
-        Tempo.place(x = 850, y = 0)
+        Tempo.place(x = 900, y = 0)
         e1 = Entry(self)
         e1.pack(fill = BOTH)
-        e1.place(x = 850, y = 55)
+        e1.place(x = 900, y = 55)
         buttonCal = Button(self,height = 3, width = 6, command = lambda : tempo_feed(e1.get()), text="Enter")
-        buttonCal.place(x = 850, y = 80)
+        buttonCal.place(x = 900, y = 80)
 
 
         # This group of lines centers the window on the screen
         # and specifies the size of the window.
-        w = 900
+        w = 950
         h = 150
         sw = self.parent.winfo_screenwidth()
         sh = self.parent.winfo_screenheight()
