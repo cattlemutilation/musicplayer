@@ -163,9 +163,8 @@ def button_pressed(event):
 def tempo_feed(e1):
     if recording:
         ascii_file = open('songs/ascii.txt','w')
-        ascii_file.write(e1)
-        ascii_file.write("\n")
-        ascii_file.write('<')
+        ascii_file.write(chr(int(e1)))
+        print('Tempo entered: ', e1)
         ascii_file.close()
     return e1
     
