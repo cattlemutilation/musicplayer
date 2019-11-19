@@ -2,9 +2,7 @@
 
 ##########################################################
 # Piano.py, when run, creates a window that simulates a  #
-# two-octave piano. This program was originally created  #
-# for the final project of CS 214 at Calvin College.     #
-#                                                        #
+# two-octave piano.                                      #
 # Created by: Tanya Agrawal                              #
 ##########################################################
 
@@ -30,16 +28,8 @@ recording = False
 pygame.init()
 
 
-##########################################################
-# Description: play is a method used in the method       #
-# playback that contains the code for opening a file,    #
-# reading it and playing each note that the file         #
-# contains in time.                                      #
-#                                                        #
-# Accepts: file_name, which contains a string with the   #
-# name of the file that holds to song that is to be      #
-# played.                                                #
-##########################################################
+# play is a method used in playback to open the file_name which is passed to the function and reads the notes in the file and does playback
+
 def play(file_name):
     song_file = open(file_name, 'r')
     print("Playback Started")
@@ -56,27 +46,14 @@ def play(file_name):
     print("Playback Stopped")
 
 
-##########################################################
-# Description: playback is a driver method for the       #
-# method play and checks what is clicked to tell what    #
-# song to play back.                                     #
-#                                                        #
-# Accepts: event, the mouse event that is tied to the    #
-# Label that is clicked.                                 #
-##########################################################
+# driver function for the playback happening after a set of notes are recorded
+# takes in the mouse event that is attached to the play_back button on the GUI
+
 def play_back(event):
     start_new_thread(play, ('songs/song.txt',))
 
+# method to change the global variable recording, which denotes whether there is current recording happening
 
-##########################################################
-# Description: record_on_off is a method that changes    #
-# the global variable recording to its opposite and      #
-# presses down the record_button Label if the program    #
-# is currently recording, and releases it if it is not.  #
-#                                                        #
-# Accepts: event, the mouse event that is tied to the    #
-# Label that is clicked.                                 #
-##########################################################
 def record_on_off(event):
     global recording
     recording = not recording
@@ -86,60 +63,22 @@ def record_on_off(event):
         file.write('@')
         file.close()
     
-
-
-##########################################################
-# Description: record is a method used in key_pressed    #
-# and button_pressed that opens a file and writes note   #
-# to that file, as well as the current time elapsed.     #
-#                                                        #
-# Accepts: file_name, the name of the file that is to be #
-# written to; note, the note that is to be written to    #
-# the file.                                              #
-##########################################################
+# changes the file passed into the file_name by adding the note value passed in
 def record(file_name, note):
     song_file = open(file_name, 'a')
     song_file.write(note + ' ')
     song_file.write('\n')
 
-
+# changes the file passed into the file_name param by adding the note value passed into the function
 def generate_ascii(file_name, note):
     song_file = open(file_name, 'a')
     key = NOTES_TO_KEYS.get(note, None)
     song_file.write(key)
-    
+# changes the file passed into the file_name param by adding the note length value passed into the function  
 def generate_ascii_number(file_name, num):
     song_file = open(file_name, 'a')
     number = str(num)
     song_file.write(number)
-
-##########################################################
-# Description: key_pressed is a method bound to each of  #
-# the keyboard keys in the dictionary KEYS_TO_NOTES that #
-# plays the note associated with the key pressed,        #
-# records that note and changes the image to the         #
-# 'pressed' or darkened version of that image.           #
-#                                                        #
-# Accepts: event, the keyboard event that is tied to the #
-# key that is pressed.                                   #
-##########################################################
-def key_pressed(event):
-    # This is so that if a key that is not in KEYS_TO_NOTES
-    # is pressed, it will not return an error.
-    note = KEYS_TO_NOTES.get(event.char, None)
-    if note:
-        wave_obj = pygame.mixer.Sound('sounds/' + note + '.wav')
-        wave_obj.play()
-        print(note)
-        if recording:
-            record('songs/song.txt', note)
-            generate_ascii('songs/ascii.txt', note)
-        
-def number_key_pressed(event):
-    # This is so that if a key that is not in KEYS_TO_NOTES
-    # is pressed, it will not return an error.
-    if recording:
-        generate_ascii_number('songs/ascii.txt', event.widget.name)
 
 ##########################################################
 # Description: button_pressed is a method bound to each  #
@@ -158,8 +97,15 @@ def button_pressed(event):
     if recording:
         record('songs/song.txt', event.widget.name)
         generate_ascii('songs/ascii.txt', event.widget.name)
-    #label_pressed(event)
-
+    
+def number_button_pressed(event):
+    note = event.widget.name
+    note = NUM_TO_NOTE_LENGTH.get(str(note), None)
+    print(note, "beats")
+    if recording:
+        generate_ascii_number('songs/ascii.txt', event.widget.name)
+        
+# method that feeds the tempo entered by the user into the file ascii.txt
 def tempo_feed(e1):
     if recording:
         ascii_file = open('songs/ascii.txt','w')
@@ -167,40 +113,7 @@ def tempo_feed(e1):
         print('Tempo entered: ', e1)
         ascii_file.close()
     return e1
-    
-def number_button_pressed(event):
-    print(event.widget.name)
-    if recording:
-        generate_ascii_number('songs/ascii.txt', event.widget.name)
-# KEYS_TO_NOTES is a dictionary that ties note
-# names to certain keys on the keyboard.
-KEYS_TO_NOTES = {
-    'a': 'C4',
-    'b': 'C#D4',
-    'c': 'D4',
-    'd': 'D#E4',
-    'e': 'E4',
-    'f': 'F4',
-    'g': 'F#G4',
-    'h': 'G4',
-    'i': 'G#A4',
-    'j': 'A4',
-    'k': 'A#B4',
-    'l': 'B4',
-    'm': 'C5',
-    'n': 'C#D5',
-    'o': 'D5',
-    'p': 'D#E5',
-    'q': 'E5',
-    'r': 'F5',
-    's': 'F#G5',
-    't': 'G5',
-    'u': 'G#A5',
-    'v': 'A5',
-    'w': 'A#B5',
-    'x': 'B5',
-    'y': 'C6'
-}
+
 NOTES_TO_KEYS = {
     'C4': 'a',
     'C#D4': 'b',
@@ -228,25 +141,21 @@ NOTES_TO_KEYS = {
     'B5': 'x',
     'C6': 'y'
 }
+NUM_TO_NOTE_LENGTH = {
+    '1': '1/4',
+    '2': '1/2',
+    '3': '1',
+    '4': '2',
+    '5': '3',
+    '6': '4'
+}
 
+# Piano is a class that initializes the
+# window and populates it with all of the necessary
+# Labels needed to play the piano
 
-##########################################################
-# Description: Piano is a class that initializes the     #
-# window and populates it with all of the necessary      #
-# Labels needed to play the piano.                       #
-#                                                        #
-# Accepts: Frame, which contains the Tkinter window      #
-# object.                                                #
-##########################################################
 class Piano(Frame):
-
-    ##########################################################
-    # Description: __init__ is a method that creates         #
-    # the window, colors it and calls init_user_interface.   #
-    #                                                        #
-    # Accepts: self, which contains the window; parent,      #
-    # which is a reference to the window.                    #
-    ##########################################################
+    
     def __init__(self, parent):
 
         # This is the initialization of the window along with the
@@ -260,19 +169,10 @@ class Piano(Frame):
         # A call to the init_user_interface method.
         self.init_user_interface()
 
-    ##########################################################
-    # Description: init_user_interface is a method that      #
-    # populates the window passed in all of the Labels,      #
-    # sizes the window, titles it, centers it on the screen  #
-    # and binds various methods to it.                       #
-    #                                                        #
-    # Accepts: self, which contains the window.              #
-    ##########################################################
+    #populates the window passed in all of the Labels,
+    #sizes the window, titles it, centers it on the screen and binds various methods to it
+    
     def init_user_interface(self):
-
-        # The 2-dimensional array keys holds the locations, names and after the
-        # for loops are executed below, the Labels that are needed
-        # to create each key, both white and black.
         keys = [
             [0, 'C4'],
             [35, 'C#D4'],
@@ -300,7 +200,6 @@ class Piano(Frame):
             [650, 'B5'],
             [700, 'C6']
         ]
-        
 
         # This for loop populates the window with the white key Labels
         # and appends a Label to each slot in keys.
@@ -320,7 +219,8 @@ class Piano(Frame):
         placement = 750
         place = 0
         for x in range(6):
-            label = Button(bg = 'white', text = num,height = 3, width = 6)
+            notelength = NUM_TO_NOTE_LENGTH.get(str(num), None)
+            label = Button(bg = 'white',text = notelength, height = 3, width = 6)
             label.name = num
             if x % 3 == 0:
                 if x != 0:
@@ -329,16 +229,15 @@ class Piano(Frame):
             label.place(x=placement, y=place)
             place = place + 50
             num = num + 1
-            label.bind('<KeyPress>', number_key_pressed)
             label.bind('<Button-1>', number_button_pressed)
 
-        # This group of lines creates the record Label.
+        # This group of lines creates the record button.
         record_button = Label(self, bg = 'red', height = 3, width = 6, text = 'record')
         record_button.place(x=850, y=0)
         record_button.name = 'red_button'
         record_button.bind('<Button-1>', record_on_off)
 
-        # This group of lines creates the play Label.
+        # This group of lines creates the play button.
         play_button = Label(self, bg = 'green', text = 'play', height = 3, width = 6)
         play_button.place(x=850, y=100)
         play_button.name = 'green_button'
@@ -367,21 +266,13 @@ class Piano(Frame):
         # it does not go out off scope and binds the presses and
         # releases of keys to their respective methods
         self.parent.keys = keys
-        self.parent.bind('<KeyPress>', key_pressed)
 
 
         # This line packs all elements bound to the window.
         self.pack(fill=BOTH, expand=1)
 
-    ##########################################################
-    # Description: create_key is a method that creates and   #
-    # returns a Label with an image, a location, a name and  #
-    # multiple bindings.                                     #
-    #                                                        #
-    # Accepts: self, the Piano class; img, the image that    #
-    # the Label will be displayed as; key, the element of    #
-    # the 2-dimensional array passed in.                     #
-    ##########################################################
+    # create_key is a method that creates the key
+    # returns a Label of the key with multiple bindings.
     def create_key(self, colour, key):
         if colour == 'white':
             label = Button(bg=colour,fg = 'black',text= key[1] ,height = 10, width = 6)
